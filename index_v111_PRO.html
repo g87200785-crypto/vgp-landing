@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="es" id="html-root">
+<!--
+  ============================================================================
+  VGP LANDING PAGE v111 PRO — index_v111_PRO.html
+  Optimizada para Blogger · Lista para producción internacional
+  ============================================================================
+  PRO-1: Bucle progresivo en doGet (script GAS — no afecta este JS)
+  PRO-2: Inyección literal data.simbolo + data.precio con trim() (sin parseFloat)
+  PRO-3: fetch con ?t=Date.now() anti-caché en cliente
+  PRO-4: Fallback visual: si precio vacío → botón "Consultar Precio Actual"
+  ============================================================================
+-->
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#020617">
+  <meta name="robots" content="noindex, nofollow">
+  <title id="page-title">Oferta Verificada | VGP v111 PRO</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       VGP v111 PRO — Producción para Blogger
+       ========================================================================== */
+
+    :root {
+      --bg:          #020617;
+      --bg-card:     #0b1120;
+      --bg-inner:    #0f172a;
+      --gold:        #f59e0b;
+      --gold-dim:    rgba(245,158,11,0.12);
+      --gold-border: rgba(245,158,11,0.28);
+      --green:       #10b981;
+      --green-dk:    #059669;
+      --red:         #ef4444;
+      --text:        #f1f5f9;
+      --text-muted:  #64748b;
+      --text-dim:    #94a3b8;
+      --border:      rgba(255,255,255,0.06);
+      --shadow-card: 0 4px 32px rgba(0,0,0,0.45);
+      --shadow-btn:  0 4px 24px rgba(245,158,11,0.38);
+      --r-md:        18px;
+      --r-lg:        26px;
+      --r-pill:      999px;
+      --ff-display:  'Syne', sans-serif;
+      --ff-body:     'DM Sans', system-ui, sans-serif;
+      --ff-mono:     'JetBrains Mono', monospace;
+    }
+
+    .vgp *, .vgp *::before, .vgp *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    .vgp { margin: 0; padding: 0; }
+
+    /* ── LOADER ────────────────────────────────────────────────── */
+    #vgp-loader {
+      position: fixed; inset: 0; background: var(--bg); z-index: 9999;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+    #vgp-loader.oculto { opacity: 0; visibility: hidden; pointer-events: none; }
+    .vgp-ring { width: 44px; height: 44px; border: 2px solid var(--border); border-top-color: var(--gold); border-radius: 50%; animation: vgp-spin 0.9s linear infinite; }
+    @keyframes vgp-spin { to { transform: rotate(360deg); } }
+    .vgp-loader-txt { font-family: var(--ff-mono); font-size: 12px; color: var(--text-muted); letter-spacing: 0.08em; }
+
+    /* ── CANDADO ───────────────────────────────────────────────── */
+    #vgp-lock { display: none; position: fixed; inset: 0; background: #000; z-index: 9998; align-items: center; justify-content: center; flex-direction: column; }
+    #vgp-lock.activo { display: flex; }
+    .vgp-lock-ring { width: 60px; height: 60px; border: 2px solid var(--red); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--red); animation: vgp-pulse-red 2s ease infinite; margin-bottom: 16px; }
+    @keyframes vgp-pulse-red { 0%,100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.5); } 50% { box-shadow: 0 0 0 20px rgba(239,68,68,0); } }
+    .vgp-lock-t { font-family: var(--ff-mono); font-size: 14px; color: var(--red); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 8px; }
+    .vgp-lock-b { font-size: 14px; color: #4a4a4a; text-align: center; }
+
+    /* ── UID INVISIBLE ─────────────────────────────────────────── */
+    #vgp-uid-anchor { display: none !important; visibility: hidden !important; position: absolute !important; pointer-events: none !important; width: 0; height: 0; overflow: hidden; font-size: 0; color: transparent; }
+
+    /* ── MAIN ──────────────────────────────────────────────────── */
+    #vgp-main {
+      width: 100%; max-width: 500px; margin: 0 auto; padding: 40px 20px 100px;
+      display: flex; flex-direction: column; align-items: center;
+      background-color: var(--bg); min-height: 100vh;
+      font-family: var(--ff-body); font-size: 16px; line-height: 1.6; color: var(--text);
+      opacity: 0; animation: vgp-appear 0.6s ease 0.1s forwards;
+    }
+    @keyframes vgp-appear { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ── HEADER ────────────────────────────────────────────────── */
+    .vgp-header { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 12px; margin-bottom: 24px; text-align: center; }
+    .vgp-badge { display: inline-flex; align-items: center; gap: 7px; padding: 5px 14px; background: var(--gold-dim); border: 1px solid var(--gold-border); border-radius: var(--r-pill); }
+    .vgp-dot { width: 6px; height: 6px; background: var(--green); border-radius: 50%; animation: vgp-blink 1.4s ease infinite; }
+    @keyframes vgp-blink { 0%,100% { opacity: 1; } 50% { opacity: 0.2; } }
+    .vgp-badge-lbl { font-family: var(--ff-mono); font-size: 10px; color: var(--gold); letter-spacing: 0.1em; }
+    .vgp-hl { font-family: var(--ff-display); font-size: clamp(24px,7vw,34px); font-weight: 900; line-height: 1.1; letter-spacing: -0.025em; color: var(--text); }
+    .vgp-hl em { font-style: normal; color: var(--gold); }
+    .vgp-sub { font-size: 14px; color: var(--text-dim); max-width: 360px; margin-top: 6px; }
+
+    /* ── IMAGEN ────────────────────────────────────────────────── */
+    .vgp-hero-wrap { width: 100%; margin-bottom: 20px; position: relative; border-radius: var(--r-lg); overflow: hidden; box-shadow: var(--shadow-card), 0 0 0 1px var(--gold-border); }
+    .vgp-hero { width: 100%; display: block; aspect-ratio: 1/1; object-fit: cover; background: var(--bg-card); transition: opacity 0.4s; opacity: 0; }
+    .vgp-hero.lista { opacity: 1; }
+    .vgp-hero-badge { position: absolute; top: 12px; left: 12px; padding: 4px 10px; background: rgba(0,0,0,0.75); backdrop-filter: blur(8px); border: 1px solid var(--gold-border); border-radius: var(--r-pill); font-family: var(--ff-mono); font-size: 9px; color: var(--gold); letter-spacing: 0.1em; }
+
+    /* ── COUNTDOWN ─────────────────────────────────────────────── */
+    .vgp-urgency { width: 100%; background: var(--bg-inner); border: 1px solid var(--border); border-radius: var(--r-md); padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+    .vgp-urg-lbl { display: block; font-family: var(--ff-mono); font-size: 10px; color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 3px; }
+    .vgp-urg-sub { display: block; font-size: 11px; color: var(--text-muted); }
+    .vgp-timer { font-family: var(--ff-mono); font-size: 26px; font-weight: 700; color: var(--red); animation: vgp-tick 1s ease infinite; }
+    @keyframes vgp-tick { 0%,100% { opacity: 1; } 50% { opacity: 0.65; } }
+
+    /* ── CARD ──────────────────────────────────────────────────── */
+    .vgp-card { width: 100%; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 28px 22px; margin-bottom: 18px; box-shadow: var(--shadow-card); position: relative; overflow: hidden; }
+    .vgp-accent { position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg,transparent 0%,var(--gold) 50%,transparent 100%); opacity: 0.55; }
+
+    /* ── PRECIO — PRO-2: Campos literales ─────────────────────── */
+    .vgp-price-block { display: flex; flex-direction: column; align-items: center; gap: 5px; margin-bottom: 20px; }
+    .vgp-price-lbl { font-family: var(--ff-mono); font-size: 10px; color: var(--text-muted); letter-spacing: 0.15em; text-transform: uppercase; }
+    .vgp-price-main { display: flex; align-items: baseline; gap: 4px; line-height: 1; animation: vgp-dopamine 2s ease-in-out infinite; }
+    @keyframes vgp-dopamine { 0%,100% { transform: scale(1); filter: drop-shadow(0 0 8px rgba(245,158,11,0.25)); } 50% { transform: scale(1.06); filter: drop-shadow(0 0 28px rgba(245,158,11,0.72)); } }
+    .vgp-simbolo { font-family: var(--ff-display); font-size: clamp(28px,8vw,40px); font-weight: 900; color: var(--gold); }
+    .vgp-precio  { font-family: var(--ff-display); font-size: clamp(52px,14vw,72px); font-weight: 900; color: var(--gold); letter-spacing: -0.04em; }
+    .vgp-price-note { font-size: 13px; color: var(--text-muted); }
+    .vgp-price-note strong { color: var(--green); }
+    .vgp-divider { width: 100%; height: 1px; background: var(--border); margin: 18px 0; }
+
+    /* ── PRO-4: Estado del bloque de precio ────────────────────── */
+    .vgp-price-block.estado-cargando .vgp-price-main { opacity: 0.4; }
+    .vgp-price-block.estado-cargando .vgp-precio::after { content: '···'; animation: vgp-dots 1.2s ease infinite; }
+    @keyframes vgp-dots { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+    .vgp-price-block.estado-consultar .vgp-price-main { display: none; }
+    .vgp-price-block.estado-consultar .vgp-price-lbl  { display: none; }
+    .vgp-price-consultar { display: none; font-family: var(--ff-mono); font-size: 12px; color: var(--text-muted); text-align: center; padding: 8px 0; letter-spacing: 0.06em; }
+    .vgp-price-block.estado-consultar .vgp-price-consultar { display: block; }
+
+    /* ── BENEFICIOS ────────────────────────────────────────────── */
+    .vgp-benefits { list-style: none; padding: 0; margin: 0 0 18px; display: flex; flex-direction: column; gap: 12px; }
+    .vgp-benefit  { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: var(--text-dim); line-height: 1.5; }
+    .vgp-check    { flex-shrink: 0; width: 18px; height: 18px; margin-top: 1px; background: var(--green-dk); border-radius: 50%; position: relative; }
+    .vgp-check::after { content: ''; position: absolute; top: 4px; left: 6px; width: 5px; height: 8px; border-right: 2px solid #fff; border-bottom: 2px solid #fff; transform: rotate(45deg); }
+    .vgp-skel { height: 16px; border-radius: 6px; background: linear-gradient(90deg,var(--bg-inner) 25%,var(--bg-card) 50%,var(--bg-inner) 75%); background-size: 200% 100%; animation: vgp-skel 1.5s ease infinite; flex: 1; display: inline-block; }
+    @keyframes vgp-skel { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+    /* ── CTA ───────────────────────────────────────────────────── */
+    .vgp-cta-group { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+
+    .vgp-btn {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%; padding: 18px 24px; border: none; border-radius: var(--r-md);
+      background: linear-gradient(135deg, var(--gold) 0%, #d97706 100%);
+      color: #000; font-family: var(--ff-display); font-size: 17px; font-weight: 800;
+      cursor: pointer; text-decoration: none; position: relative; overflow: hidden;
+      box-shadow: var(--shadow-btn); transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .vgp-btn::before { content: ''; position: absolute; top: 0; left: -100%; width: 55%; height: 100%; background: linear-gradient(90deg,transparent,rgba(255,255,255,0.28),transparent); animation: vgp-shimmer 2.8s ease infinite; }
+    @keyframes vgp-shimmer { 0% { left: -100%; } 60% { left: 150%; } 100% { left: 150%; } }
+    .vgp-btn:hover  { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(245,158,11,0.55); }
+    .vgp-btn:active { transform: scale(0.98); }
+
+    .vgp-btn-consultar {
+      display: none;
+      align-items: center; justify-content: center; gap: 8px;
+      width: 100%; padding: 18px 24px; border: 1px solid var(--gold-border); border-radius: var(--r-md);
+      background: transparent; color: var(--gold);
+      font-family: var(--ff-display); font-size: 16px; font-weight: 700;
+      cursor: pointer; text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+    }
+    .vgp-btn-consultar:hover { background: var(--gold-dim); }
+
+    .vgp-cta-group.modo-consultar .vgp-btn          { display: none; }
+    .vgp-cta-group.modo-consultar .vgp-btn-consultar { display: flex; }
+
+    .vgp-trust { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted); }
+    .vgp-trust-dot { width: 5px; height: 5px; background: var(--green); border-radius: 50%; flex-shrink: 0; }
+
+    /* ── STICKY ────────────────────────────────────────────────── */
+    #vgp-sticky { position: fixed; bottom: 0; left: 0; right: 0; padding: 12px 20px 24px; background: linear-gradient(to top,var(--bg) 65%,transparent); z-index: 300; display: flex; flex-direction: column; align-items: center; gap: 6px; opacity: 0; transform: translateY(100%); transition: opacity 0.45s,transform 0.45s; pointer-events: none; }
+    #vgp-sticky.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    .vgp-btn-sticky { width: 100%; max-width: 460px; padding: 15px 24px; border: none; border-radius: var(--r-md); background: linear-gradient(135deg,var(--gold) 0%,#d97706 100%); color: #000; font-family: var(--ff-display); font-size: 15px; font-weight: 800; cursor: pointer; box-shadow: var(--shadow-btn); transition: transform 0.15s; }
+    .vgp-btn-sticky:hover { transform: translateY(-1px); }
+    .vgp-live { display: flex; align-items: center; gap: 6px; font-family: var(--ff-mono); font-size: 10px; color: var(--text-muted); }
+    .vgp-led  { width: 7px; height: 7px; background: var(--red); border-radius: 50%; animation: vgp-led 0.8s ease infinite; box-shadow: 0 0 6px var(--red); }
+    @keyframes vgp-led { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+    /* ── TOAST ─────────────────────────────────────────────────── */
+    #vgp-toast-wrap { position: fixed; bottom: 72px; left: 50%; transform: translateX(-50%); z-index: 500; pointer-events: none; width: calc(100% - 40px); max-width: 360px; }
+    .vgp-toast { background: var(--bg-card); border: 1px solid var(--gold-border); border-radius: 10px; padding: 10px 14px; display: flex; align-items: center; gap: 10px; opacity: 0; transform: translateY(10px); transition: opacity 0.4s,transform 0.4s; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+    .vgp-toast.visible { opacity: 1; transform: translateY(0); }
+    .vgp-toast-av { width: 28px; height: 28px; flex-shrink: 0; border-radius: 50%; background: var(--gold-dim); border: 1px solid var(--gold-border); display: flex; align-items: center; justify-content: center; font-family: var(--ff-mono); font-size: 11px; font-weight: 700; color: var(--gold); }
+    .vgp-toast-body strong { display: block; color: var(--text); font-size: 13px; }
+    .vgp-toast-body span   { font-size: 12px; color: var(--text-dim); }
+
+    /* ── FOOTER ────────────────────────────────────────────────── */
+    .vgp-footer { width: 100%; text-align: center; padding-top: 28px; margin-top: 8px; border-top: 1px solid var(--border); }
+    .vgp-footer-badge { font-family: var(--ff-mono); font-size: 10px; color: var(--text-muted); letter-spacing: 0.06em; }
+    .vgp-footer-ver   { font-family: var(--ff-mono); font-size: 9px; color: #1e293b; margin-top: 4px; }
+
+    /* ── RESPONSIVE ────────────────────────────────────────────── */
+    @media (max-width: 400px) { #vgp-main { padding: 28px 16px 96px; } .vgp-card { padding: 22px 16px; } }
+    @media (prefers-reduced-motion: reduce) { .vgp-price-main, .vgp-btn::before, .vgp-ring { animation: none; } }
+  </style>
+</head>
+
+<body>
+
+  <!-- LOADER -->
+  <div id="vgp-loader">
+    <div class="vgp-ring"></div>
+    <p class="vgp-loader-txt" id="vgp-loader-txt">Conectando con VGP PRO...</p>
+  </div>
+
+  <!-- CANDADO -->
+  <div id="vgp-lock">
+    <div class="vgp-lock-ring">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+      </svg>
+    </div>
+    <p class="vgp-lock-t" id="vgp-lock-t">ERROR DE SEGURIDAD</p>
+    <p class="vgp-lock-b" id="vgp-lock-b">Enlace no verificado.</p>
+  </div>
+
+  <!-- UID INVISIBLE — PRO-2 -->
+  <span id="vgp-uid-anchor" data-vgp-uid="" data-vgp-version="v111.PRO" aria-hidden="true"></span>
+
+  <!-- MAIN -->
+  <main id="vgp-main" class="vgp">
+
+    <header class="vgp-header">
+      <div class="vgp-badge">
+        <span class="vgp-dot"></span>
+        <span class="vgp-badge-lbl" id="vgp-badge">SISTEMA VERIFICADO · VGP v111 PRO</span>
+      </div>
+      <h1 class="vgp-hl" id="vgp-hl">Descubre la oferta que <em>cambiará</em> tus ingresos</h1>
+      <p class="vgp-sub" id="vgp-sub">Analizado por IA · Verificado por VGP Global</p>
+    </header>
+
+    <!-- IMAGEN OPTIMIZADA POR IA -->
+    <div class="vgp-hero-wrap">
+      <img id="vgp-hero" class="vgp-hero" src="" alt="Producto verificado por IA" loading="eager">
+      <span class="vgp-hero-badge">◈ Imagen optimizada por IA</span>
+    </div>
+
+    <!-- COUNTDOWN -->
+    <div class="vgp-urgency">
+      <div>
+        <span class="vgp-urg-lbl" id="vgp-urg-lbl">Precio especial activo por</span>
+        <span class="vgp-urg-sub" id="vgp-urg-sub">Acceso garantizado al finalizar</span>
+      </div>
+      <span class="vgp-timer" id="vgp-timer">06:47</span>
+    </div>
+
+    <!-- PRODUCT CARD -->
+    <section class="vgp-card">
+      <div class="vgp-accent"></div>
+
+      <div class="vgp-price-block estado-cargando" id="vgp-price-block">
+        <span class="vgp-price-lbl" id="vgp-price-lbl">Tu comisión por venta</span>
+
+        <div class="vgp-price-main" aria-label="Precio del producto">
+          <span class="vgp-simbolo" id="vgp-simbolo"></span>
+          <span class="vgp-precio"  id="vgp-precio"></span>
+        </div>
+
+        <p class="vgp-price-consultar">Precio disponible en el enlace</p>
+        <p class="vgp-price-note">Recibes esto <strong>por cada conversión</strong></p>
+      </div>
+
+      <div class="vgp-divider"></div>
+
+      <!-- BENEFICIOS -->
+      <ul class="vgp-benefits">
+        <li class="vgp-benefit"><span class="vgp-check"></span><span id="vgp-b1"><span class="vgp-skel" style="width:85%"></span></span></li>
+        <li class="vgp-benefit"><span class="vgp-check"></span><span id="vgp-b2"><span class="vgp-skel" style="width:70%"></span></span></li>
+        <li class="vgp-benefit"><span class="vgp-check"></span><span id="vgp-b3"><span class="vgp-skel" style="width:78%"></span></span></li>
+      </ul>
+
+      <div class="vgp-divider"></div>
+
+      <div class="vgp-cta-group" id="vgp-cta-group">
+
+        <a id="vgp-btn" class="vgp-btn" href="#" rel="nofollow sponsored" target="_blank" aria-label="Acceder al producto">
+          <span id="vgp-btn-txt">Acceder ahora</span>
+          <span style="font-size:18px;font-family:monospace">→</span>
+        </a>
+
+        <a id="vgp-btn-consultar" class="vgp-btn-consultar" href="#" target="_blank" rel="nofollow">
+          🔍 Consultar Precio Actual
+        </a>
+
+        <p class="vgp-trust">
+          <span class="vgp-trust-dot"></span>
+          Pago 100&nbsp;% seguro · Acceso inmediato · Garantía incluida
+        </p>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="vgp-footer">
+      <p class="vgp-footer-badge">◈ Verificado por IA · VGP v111 PRO</p>
+      <p class="vgp-footer-ver" id="vgp-footer-ver">VGP_2026_000 · v111.PRO</p>
+    </footer>
+
+  </main>
+
+  <!-- STICKY -->
+  <div id="vgp-sticky">
+    <button class="vgp-btn-sticky" id="vgp-btn-sticky" type="button">Acceder al producto</button>
+    <div class="vgp-live"><span class="vgp-led"></span><span>EN VIVO · Oferta activa</span></div>
+  </div>
+
+  <!-- TOAST -->
+  <div id="vgp-toast-wrap">
+    <div class="vgp-toast" id="vgp-toast">
+      <div class="vgp-toast-av" id="vgp-toast-av">JL</div>
+      <div class="vgp-toast-body">
+        <strong id="vgp-toast-name">Juan L.</strong>
+        <span    id="vgp-toast-action">acaba de acceder al producto</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* =========================================================================
+       VGP v111 PRO — JavaScript de producción
+       SCRIPT_URL configurado y listo para producción
+       ========================================================================= */
+
+    var SCRIPT_URL     = 'https://script.google.com/macros/s/AKfycby6K_-Dvy3HRznndS1K_1COXp4wML4wRh9Zr4Fz9VohTkaRVv7CZNrqTMDq3qm3XU-YDg/exec';
+    var COUNTDOWN_SEG  = 407;
+    var STORAGE_PREFIX = 'vgp_pro_';
+
+    /* ── i18n ───────────────────────────────────────────────────── */
+    var TX = {
+      es: { badge:'SISTEMA VERIFICADO · VGP v111 PRO', hl:'Descubre la oferta que <em>cambiará</em> tus ingresos', sub:'Analizado por IA · Verificado por VGP Global', pl:'Tu comisión por venta', btn:'Acceder ahora', consultar:'🔍 Consultar Precio Actual', b1:'Producto analizado con score IA superior a 8.5 / 10', b2:'Comisión directa validada por el sistema VGP', b3:'Garantía de reembolso incluida para el comprador', ldr:['Conectando con VGP PRO...','Cargando datos del producto...','Verificando oferta...','Activando precio vivo...'], nom:['Carlos R.','Ana M.','Luis G.','María T.','Pedro A.'], act:['acaba de acceder al producto','compró hace 2 minutos','está viendo esta oferta'] },
+      en: { badge:'SYSTEM VERIFIED · VGP v111 PRO', hl:'Discover the offer that will <em>transform</em> your income', sub:'AI-analyzed · Validated by VGP Global', pl:'Your commission per sale', btn:'Get access now', consultar:'🔍 Check Current Price', b1:'Product analyzed with AI score above 8.5 / 10', b2:'Direct commission validated by the VGP system', b3:'Money-back guarantee included for the buyer', ldr:['Connecting to VGP PRO...','Loading product data...','Verifying offer...','Activating live price...'], nom:['James K.','Sarah M.','Mike D.','Emma P.'], act:['just accessed the product','purchased 2 minutes ago','is viewing this offer'] },
+      de: { badge:'SYSTEM VERIFIZIERT · VGP v111 PRO', hl:'Entdecke das Angebot, das deine <em>Einnahmen verändert</em>', sub:'KI-analysiert · Von VGP Global validiert', pl:'Deine Provision pro Verkauf', btn:'Jetzt Zugang erhalten', consultar:'🔍 Aktuellen Preis prüfen', b1:'Produkt mit KI-Score über 8,5 / 10', b2:'Provision vom VGP-System validiert', b3:'Geld-zurück-Garantie inklusive', ldr:['VGP PRO verbinden...','Produktdaten laden...','Angebot prüfen...','Preis aktivieren...'], nom:['Klaus M.','Anna B.','Stefan K.'], act:['hat soeben Zugang erhalten','hat vor 2 Min. gekauft','sieht das Angebot'] },
+      pt: { badge:'SISTEMA VERIFICADO · VGP v111 PRO', hl:'Descubra a oferta que vai <em>transformar</em> sua renda', sub:'Analisado por IA · Validado pelo VGP Global', pl:'Sua comissão por venda', btn:'Quero acesso agora', consultar:'🔍 Consultar Preço Atual', b1:'Produto com score IA acima de 8,5 / 10', b2:'Comissão validada pelo sistema VGP', b3:'Garantia de reembolso incluída', ldr:['Conectando ao VGP PRO...','Carregando dados...','Verificando oferta...','Ativando preço ao vivo...'], nom:['João P.','Maria S.','Lucas A.'], act:['acabou de acessar o produto','comprou há 2 minutos','está vendo esta oferta'] },
+      fr: { badge:'SYSTÈME VÉRIFIÉ · VGP v111 PRO', hl:"Découvrez l'offre qui va <em>transformer</em> vos revenus", sub:'Analysé par IA · Validé par VGP Global', pl:'Votre commission par vente', btn:"Obtenir l'accès maintenant", consultar:'🔍 Consulter le Prix Actuel', b1:'Score IA supérieur à 8,5 / 10', b2:'Commission validée par le système VGP', b3:"Garantie de remboursement incluse", ldr:['Connexion VGP PRO...','Chargement...','Vérification...','Activation prix...'], nom:['Pierre D.','Marie L.','Jean M.'], act:["vient d'accéder au produit",'a acheté il y a 2 min','consulte cette offre'] },
+      it: { badge:'SISTEMA VERIFICATO · VGP v111 PRO', hl:"Scopri l'offerta che <em>trasformerà</em> le tue entrate", sub:'Analizzato da IA · Validato da VGP Global', pl:'La tua commissione per vendita', btn:'Voglio accedere ora', consultar:'🔍 Controlla il Prezzo Attuale', b1:'Punteggio IA superiore a 8,5 / 10', b2:'Commissione validata dal sistema VGP', b3:'Garanzia di rimborso inclusa', ldr:['Connessione VGP PRO...','Caricamento...','Verifica...','Attivazione prezzo...'], nom:['Marco R.','Giulia B.','Luca F.'], act:["ha appena ottenuto l'accesso",'ha acquistato 2 min fa','sta visualizzando questa offerta'] },
+    };
+
+    /* ── Helpers ────────────────────────────────────────────────── */
+    var $  = function(id) { return document.getElementById(id); };
+    var st = function(id, v) { var e = $(id); if (e && v !== undefined) e.textContent = v; };
+    var sh = function(id, v) { var e = $(id); if (e && v !== undefined) e.innerHTML = v; };
+
+    /* ── Params ─────────────────────────────────────────────────── */
+    var P = (function() {
+      var p = new URLSearchParams(window.location.search);
+      return { id: p.get('id') || null, lang: (p.get('lang') || 'es').toLowerCase(), full: window.location.href };
+    })();
+
+    var lang = TX[P.lang] ? P.lang : 'es';
+    var T    = TX[lang];
+
+    /* ── i18n inicial ───────────────────────────────────────────── */
+    function aplicarIdioma() {
+      $('html-root').setAttribute('lang', lang);
+      st('vgp-badge', T.badge);
+      sh('vgp-hl', T.hl);
+      st('vgp-sub', T.sub);
+      st('vgp-price-lbl', T.pl);
+      st('vgp-btn-txt', T.btn);
+      var bc = $('vgp-btn-consultar'); if (bc) bc.textContent = T.consultar;
+    }
+    aplicarIdioma();
+
+    /* ── Loader ─────────────────────────────────────────────────── */
+    var _lInt = null;
+    (function() {
+      var el = $('vgp-loader-txt'), copies = T.ldr, i = 0;
+      if (!el) return;
+      el.textContent = copies[0];
+      _lInt = setInterval(function() { i=(i+1)%copies.length; el.textContent=copies[i]; }, 1200);
+    })();
+    function loaderOcultar() { clearInterval(_lInt); var e=$('vgp-loader'); if(e)e.classList.add('oculto'); }
+
+    /* ── Candado ────────────────────────────────────────────────── */
+    if (!P.id || !P.id.startsWith('VGP_')) {
+      var lk = $('vgp-lock'); if (lk) lk.classList.add('activo');
+      var mn = $('vgp-main'); if (mn) mn.style.visibility = 'hidden';
+      loaderOcultar();
+      throw new Error('[VGP PRO] UID inválido: ' + P.id);
+    }
+
+    /* ── UID invisible ──────────────────────────────────────────── */
+    var ua = $('vgp-uid-anchor');
+    if (ua) { ua.setAttribute('data-vgp-uid', P.id); ua.textContent = P.id; }
+    var fv = $('vgp-footer-ver'); if (fv) fv.textContent = P.id + ' · v111.PRO';
+
+    /* ── Variables de estado ────────────────────────────────────── */
+    var _ctaUrl  = null;
+    var _cargado = false;
+
+    /* ── PRO-4: activarModoConsultar() ──────────────────────────── */
+    function activarModoConsultar(razon) {
+      console.warn('[VGP PRO-4] Modo consultar activado:', razon);
+
+      var pb = $('vgp-price-block');
+      if (pb) {
+        pb.classList.remove('estado-cargando', 'estado-ok');
+        pb.classList.add('estado-consultar');
+      }
+
+      var cg = $('vgp-cta-group');
+      if (cg) cg.classList.add('modo-consultar');
+
+      var bc = $('vgp-btn-consultar');
+      if (bc && SCRIPT_URL) {
+        bc.href = SCRIPT_URL + '?id=' + encodeURIComponent(P.id) + '&t=' + Date.now();
+        bc.textContent = T.consultar;
+      } else if (bc) {
+        bc.href = window.location.href;
+        bc.textContent = T.consultar;
+      }
+
+      st('vgp-b1', T.b1);
+      st('vgp-b2', T.b2);
+      st('vgp-b3', T.b3);
+    }
+
+    /* ── Motor de inyección de datos ───────────────────────────── */
+    function inyectarDatos(data) {
+      var img = $('vgp-hero');
+      if (img && data.urlFoto) {
+        img.onload  = function() { img.classList.add('lista'); };
+        img.onerror = function() { img.style.display = 'none'; };
+        img.src = data.urlFoto;
+      }
+
+      if (data.titulo_viral) { var h=$('vgp-hl'); if(h) h.textContent = data.titulo_viral; }
+
+      if (data.pilar1) st('vgp-b1', data.pilar1); else st('vgp-b1', T.b1);
+      if (data.pilar2) st('vgp-b2', data.pilar2); else st('vgp-b2', T.b2);
+      if (data.pilar3) st('vgp-b3', data.pilar3); else st('vgp-b3', T.b3);
+
+      var simboloLiteral = (data.simbolo || data.symbolCorriente || '').trim();
+      var precioLiteral  = (data.precio  || data.precioCorriente  || '').trim();
+
+      var precioVacio = !precioLiteral || precioLiteral.length === 0;
+
+      if (precioVacio) {
+        activarModoConsultar('precio vacío tras trim()');
+        return;
+      }
+
+      var es = $('vgp-simbolo'), ep = $('vgp-precio');
+      if (es) es.textContent = simboloLiteral;
+      if (ep) ep.textContent = precioLiteral;
+
+      var pb = $('vgp-price-block');
+      if (pb) { pb.classList.remove('estado-cargando', 'estado-consultar'); pb.classList.add('estado-ok'); }
+
+      _ctaUrl = data.urlAfiliado || null;
+      var btn = $('vgp-btn');
+      if (btn && _ctaUrl) {
+        btn.href = _ctaUrl;
+      } else if (btn && !_ctaUrl) {
+        activarModoConsultar('urlAfiliado vacío');
+        return;
+      }
+
+      if (data.lang && TX[data.lang] && data.lang !== lang) {
+        lang = data.lang; T = TX[lang]; aplicarIdioma();
+        if (!data.pilar1) st('vgp-b1', T.b1);
+        if (!data.pilar2) st('vgp-b2', T.b2);
+        if (!data.pilar3) st('vgp-b3', T.b3);
+      }
+
+      _cargado = true;
+    }
+
+    /* ── PRO-3: Fetch con timestamp anti-caché ──────────────────── */
+    function cargarDatosProducto(uid) {
+      var urlFetch = SCRIPT_URL + '?id=' + encodeURIComponent(uid) + '&t=' + Date.now();
+
+      fetch(urlFetch)
+        .then(function(r) {
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          return r.json();
+        })
+        .then(function(data) {
+          if (!data || data.error) {
+            activarModoConsultar('doGet error: ' + (data ? data.error : 'sin datos'));
+            return;
+          }
+          inyectarDatos(data);
+        })
+        .catch(function(err) {
+          activarModoConsultar('fetch error: ' + err.message);
+        });
+    }
+
+    /* ── Countdown ──────────────────────────────────────────────── */
+    var _cdKey = STORAGE_PREFIX + (P.id || 'default');
+    (function() {
+      var guardado = parseInt(sessionStorage.getItem(_cdKey), 10);
+      var restante = (!isNaN(guardado) && guardado > 0) ? guardado : COUNTDOWN_SEG;
+      var render = function(s) { var el=$('vgp-timer'); if(el) el.textContent=Math.floor(s/60).toString().padStart(2,'0')+':'+(s%60).toString().padStart(2,'0'); };
+      render(restante);
+      setInterval(function() { restante--; if(restante<=0) restante=COUNTDOWN_SEG; sessionStorage.setItem(_cdKey,restante); render(restante); }, 1000);
+    })();
+
+    /* ── Sticky ─────────────────────────────────────────────────── */
+    window.addEventListener('scroll', function() {
+      var sb = $('vgp-sticky'); if (sb) sb.classList[window.scrollY > 280 ? 'add' : 'remove']('visible');
+    }, { passive: true });
+
+    var stickyBtn = $('vgp-btn-sticky');
+    if (stickyBtn) {
+      stickyBtn.onclick = function() {
+        if (_ctaUrl) window.open(_ctaUrl, '_blank', 'noopener');
+        else window.open(SCRIPT_URL + '?id=' + encodeURIComponent(P.id), '_blank', 'noopener');
+      };
+    }
+
+    /* ── Toast ──────────────────────────────────────────────────── */
+    function mostrarToast() {
+      var n=T.nom[Math.floor(Math.random()*T.nom.length)], a=T.act[Math.floor(Math.random()*T.act.length)];
+      st('vgp-toast-av', n.split(' ').map(function(w){return w[0]||'';}).join('').substring(0,2).toUpperCase());
+      st('vgp-toast-name', n); st('vgp-toast-action', a);
+      var t=$('vgp-toast'); if(!t)return; t.classList.add('visible');
+      setTimeout(function(){t.classList.remove('visible');},5000);
+    }
+
+    /* ── BOOT ───────────────────────────────────────────────────── */
+    var _t0 = Date.now();
+    cargarDatosProducto(P.id);
+
+    setTimeout(function() {
+      loaderOcultar();
+      setTimeout(mostrarToast, 9000);
+      setInterval(mostrarToast, 18000);
+    }, Math.max(0, 1800 - (Date.now() - _t0)));
+
+    /* ── Diagnóstico window.VGP.* ───────────────────────────────── */
+    window.VGP = {
+      uid:      function() { console.log('UID:', P.id); },
+      precio:   function(s, p) {
+        var es=$('vgp-simbolo'), ep=$('vgp-precio');
+        if (es) es.textContent = String(s).trim();
+        if (ep) ep.textContent = String(p).trim();
+        var pb=$('vgp-price-block'); if(pb){pb.classList.remove('estado-cargando','estado-consultar');pb.classList.add('estado-ok');}
+      },
+      consultar: function() { activarModoConsultar('Manual desde consola'); },
+      reload:    function() { cargarDatosProducto(P.id); },
+      toast:     function() { mostrarToast(); },
+    };
+  </script>
+
+</body>
+</html>
