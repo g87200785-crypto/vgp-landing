@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
   <meta name="theme-color" content="#020617">
   <meta name="robots" content="noindex, nofollow">
-  <title id="dynamic-title">VGP | Cargando oferta...</title>
-  <meta name="description" id="dynamic-description" content="Analizado por IA · Verificado por VGP Global">
+  <title id="dynamic-title">Cargando...</title>
+  <meta name="description" id="dynamic-description" content="">
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
     * {
@@ -52,9 +52,7 @@
     }
 
     @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
+      to { transform: rotate(360deg); }
     }
 
     .loader-txt {
@@ -83,13 +81,8 @@
       transition: transform 0.2s;
     }
 
-    #emergency-btn:hover {
-      transform: scale(1.05);
-    }
-
-    #emergency-btn.visible {
-      display: block;
-    }
+    #emergency-btn:hover { transform: scale(1.05); }
+    #emergency-btn.visible { display: block; }
 
     /* ERROR */
     #error-container {
@@ -105,9 +98,7 @@
       padding: 20px;
     }
 
-    #error-container.activo {
-      display: flex;
-    }
+    #error-container.activo { display: flex; }
 
     .error-icon {
       width: 60px;
@@ -124,15 +115,8 @@
     }
 
     @keyframes pulse {
-
-      0%,
-      100% {
-        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5);
-      }
-
-      50% {
-        box-shadow: 0 0 0 20px rgba(239, 68, 68, 0);
-      }
+      0%,100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.5); }
+      50% { box-shadow: 0 0 0 20px rgba(239,68,68,0); }
     }
 
     .error-title {
@@ -164,78 +148,56 @@
     }
 
     @keyframes appear {
-      from {
-        opacity: 0;
-        transform: translateY(14px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    /* HEADER */
+    /* HEADER - SIN BADGE */
     .header {
       text-align: center;
-      margin-bottom: 24px;
-    }
-
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      padding: 5px 14px;
-      background: rgba(245, 158, 11, 0.12);
-      border: 1px solid rgba(245, 158, 11, 0.28);
-      border-radius: 999px;
-      margin-bottom: 12px;
-    }
-
-    .dot {
-      width: 6px;
-      height: 6px;
-      background: #10b981;
-      border-radius: 50%;
-      animation: blink 1.4s ease infinite;
-    }
-
-    @keyframes blink {
-
-      0%,
-      100% {
-        opacity: 1;
-      }
-
-      50% {
-        opacity: 0.2;
-      }
-    }
-
-    .badge-text {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      color: #f59e0b;
-      letter-spacing: 0.1em;
+      margin-bottom: 16px;
     }
 
     h1 {
       font-family: 'Syne', sans-serif;
-      font-size: clamp(24px, 7vw, 34px);
+      font-size: clamp(28px, 8vw, 42px);
       font-weight: 900;
-      line-height: 1.1;
+      line-height: 1.2;
       color: #f1f5f9;
+      margin-bottom: 8px;
     }
 
-    h1 em {
-      font-style: normal;
-      color: #f59e0b;
+    /* COUNTDOWN */
+    .countdown {
+      width: 100%;
+      background: #0f172a;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 18px;
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
     }
 
-    .sub {
-      font-size: 14px;
-      color: #94a3b8;
-      margin-top: 8px;
+    .countdown-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: #64748b;
+      text-transform: uppercase;
+    }
+
+    .timer {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 26px;
+      font-weight: 700;
+      color: #ef4444;
+      animation: tick 1s ease infinite;
+    }
+
+    @keyframes tick {
+      0%,100% { opacity: 1; }
+      50% { opacity: 0.65; }
     }
 
     /* IMAGEN */
@@ -245,7 +207,6 @@
       border-radius: 26px;
       overflow: hidden;
       box-shadow: 0 4px 32px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(245, 158, 11, 0.28);
-      position: relative;
     }
 
     .product-image {
@@ -261,65 +222,17 @@
       opacity: 1;
     }
 
-    .image-badge {
-      position: absolute;
-      top: 12px;
-      left: 12px;
-      padding: 4px 10px;
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(8px);
-      border-radius: 999px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 9px;
-      color: #f59e0b;
+    /* DESCRIPCIÓN */
+    .description {
+      text-align: center;
+      font-size: 16px;
+      line-height: 1.6;
+      color: #94a3b8;
+      margin-bottom: 24px;
+      padding: 0 8px;
     }
 
-    /* COUNTDOWN */
-    .countdown {
-      width: 100%;
-      background: #0f172a;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      border-radius: 18px;
-      padding: 14px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 18px;
-    }
-
-    .countdown-label {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      color: #64748b;
-      text-transform: uppercase;
-    }
-
-    .countdown-sub {
-      font-size: 11px;
-      color: #64748b;
-    }
-
-    .timer {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 26px;
-      font-weight: 700;
-      color: #ef4444;
-      animation: tick 1s ease infinite;
-    }
-
-    @keyframes tick {
-
-      0%,
-      100% {
-        opacity: 1;
-      }
-
-      50% {
-        opacity: 0.65;
-      }
-    }
-
-    /* CARD */
+    /* CARD PRECIO */
     .card {
       width: 100%;
       background: #0b1120;
@@ -359,6 +272,7 @@
       align-items: baseline;
       justify-content: center;
       gap: 4px;
+      margin: 10px 0;
     }
 
     .currency {
@@ -418,65 +332,12 @@
       display: block;
     }
 
-    /* BENEFICIOS */
+    /* BENEFICIOS (ocultos) */
     .benefits {
-      list-style: none;
-      margin: 0 0 18px;
+      display: none;
     }
 
-    .benefit {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      font-size: 14px;
-      color: #94a3b8;
-      line-height: 1.5;
-      margin-bottom: 12px;
-    }
-
-    .check {
-      width: 18px;
-      height: 18px;
-      margin-top: 1px;
-      background: #059669;
-      border-radius: 50%;
-      position: relative;
-      flex-shrink: 0;
-    }
-
-    .check::after {
-      content: '';
-      position: absolute;
-      top: 4px;
-      left: 6px;
-      width: 5px;
-      height: 8px;
-      border-right: 2px solid #fff;
-      border-bottom: 2px solid #fff;
-      transform: rotate(45deg);
-    }
-
-    .skeleton {
-      height: 16px;
-      border-radius: 6px;
-      background: linear-gradient(90deg, #0f172a 25%, #0b1120 50%, #0f172a 75%);
-      background-size: 200% 100%;
-      animation: skeleton 1.5s ease infinite;
-      display: inline-block;
-      width: 100%;
-    }
-
-    @keyframes skeleton {
-      0% {
-        background-position: 200% 0;
-      }
-
-      100% {
-        background-position: -200% 0;
-      }
-    }
-
-    /* BOTONES */
+    /* BOTÓN PRINCIPAL */
     .btn-area {
       display: flex;
       flex-direction: column;
@@ -518,17 +379,9 @@
     }
 
     @keyframes shimmer {
-      0% {
-        left: -100%;
-      }
-
-      60% {
-        left: 150%;
-      }
-
-      100% {
-        left: 150%;
-      }
+      0% { left: -100%; }
+      60% { left: 150%; }
+      100% { left: 150%; }
     }
 
     .btn-main:hover {
@@ -641,15 +494,8 @@
     }
 
     @keyframes led-pulse {
-
-      0%,
-      100% {
-        opacity: 1;
-      }
-
-      50% {
-        opacity: 0.3;
-      }
+      0%,100% { opacity: 1; }
+      50% { opacity: 0.3; }
     }
 
     /* TOAST */
@@ -717,12 +563,6 @@
       border-top: 1px solid rgba(255, 255, 255, 0.06);
     }
 
-    .footer-badge {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      color: #64748b;
-    }
-
     .footer-uid {
       font-family: 'JetBrains Mono', monospace;
       font-size: 9px;
@@ -734,7 +574,6 @@
       #main {
         padding: 28px 16px 96px;
       }
-
       .card {
         padding: 22px 16px;
       }
@@ -746,7 +585,7 @@
 
   <div id="loader">
     <div class="ring"></div>
-    <p class="loader-txt" id="loaderText">Conectando con VGP PRO...</p>
+    <p class="loader-txt" id="loaderText">Conectando...</p>
   </div>
 
   <button id="emergency-btn">⚠️ Ir directo a la oferta</button>
@@ -758,20 +597,13 @@
   </div>
 
   <div id="main">
+    
+    <!-- TÍTULO DINÁMICO (del producto) -->
     <div class="header">
-      <div class="badge">
-        <span class="dot"></span>
-        <span class="badge-text" id="badgeText">SISTEMA VERIFICADO · VGP v139</span>
-      </div>
-      <h1 id="title">Cargando <em>producto</em>...</h1>
-      <p class="sub" id="subtitle">Analizado por IA · Verificado por VGP Global</p>
+      <h1 id="title">Cargando...</h1>
     </div>
 
-    <div class="image-wrapper">
-      <img class="product-image" id="productImage" src="" alt="Producto VGP">
-      <span class="image-badge">◈ Imagen optimizada por IA</span>
-    </div>
-
+    <!-- COUNTDOWN -->
     <div class="countdown">
       <div>
         <span class="countdown-label" id="countdownLabel">Oferta especial activa por</span>
@@ -779,6 +611,15 @@
       <span class="timer" id="timer">06:47</span>
     </div>
 
+    <!-- IMAGEN (sin badge) -->
+    <div class="image-wrapper">
+      <img class="product-image" id="productImage" src="" alt="Producto">
+    </div>
+
+    <!-- DESCRIPCIÓN DINÁMICA (del producto) -->
+    <div class="description" id="description"></div>
+
+    <!-- CARD PRECIO -->
     <div class="card">
       <div class="accent"></div>
 
@@ -794,13 +635,14 @@
 
       <div class="divider"></div>
 
-      <ul class="benefits" id="benefits">
-        <li class="benefit"><span class="check"></span><span id="benefit1"><span class="skeleton"></span></span></li>
-        <li class="benefit"><span class="check"></span><span id="benefit2"><span class="skeleton"></span></span></li>
-        <li class="benefit"><span class="check"></span><span id="benefit3"><span class="skeleton"></span></span></li>
+      <!-- BENEFICIOS (ocultos) -->
+      <ul class="benefits" id="benefits" style="display:none;">
+        <li class="benefit" style="display:none;"><span class="check"></span><span id="benefit1"></span></li>
+        <li class="benefit" style="display:none;"><span class="check"></span><span id="benefit2"></span></li>
+        <li class="benefit" style="display:none;"><span class="check"></span><span id="benefit3"></span></li>
       </ul>
 
-      <div class="divider"></div>
+      <div class="divider" style="display:none;"></div>
 
       <div class="btn-area" id="btnArea">
         <a id="btnMain" class="btn-main" href="#" target="_blank" rel="nofollow sponsored">
@@ -813,7 +655,6 @@
     </div>
 
     <div class="footer">
-      <p class="footer-badge">◈ Verificado por IA · VGP v139 ULTRA-ELITE</p>
       <p class="footer-uid" id="footerUid">Cargando...</p>
     </div>
   </div>
@@ -835,20 +676,16 @@
 
   <script>
     // ============================================================================
-    // LANDING VGP v139 ULTRA-ELITE - PRODUCCIÓN COMPLETA
-    // ============================================================================
-    // DICCIONARIO COMPLETO 6 IDIOMAS | PRECIO SELLADO PRO-2 | BOTÓN DE EMERGENCIA
-    // META-TAGS DINÁMICOS | SKELETON PREMIUM
+    // LANDING VGP v139 - VERSIÓN SIMPLIFICADA
     // ============================================================================
 
-    // ========== CONFIGURACIÓN ==========
+    // ⚠️ IMPORTANTE: Reemplaza SCRIPT_URL con la URL de tu Google Apps Script
     const SCRIPT_URL = 'https://script.google.com/macros/s/TU_SCRIPT_ID/exec';
     const EMERGENCY_TIMEOUT_MS = 5000;
 
     // ========== DICCIONARIO COMPLETO 6 IDIOMAS ==========
     const TEXTS = {
       es: {
-        badge: 'SISTEMA VERIFICADO · VGP v139',
         btn: 'Acceder ahora',
         btnFallback: '🔍 Consultar Precio Actual',
         priceLabel: 'Tu comisión por venta',
@@ -856,12 +693,11 @@
         trust: 'Pago 100% seguro · Acceso inmediato · Garantía incluida',
         live: 'EN VIVO · Oferta activa',
         countdownLabel: 'Oferta especial activa por',
-        loader: ['Conectando con VGP PRO...', 'Cargando datos del producto...', 'Verificando oferta...', 'Activando precio vivo...'],
-        names: ['Carlos R.', 'Ana M.', 'Luis G.', 'María T.', 'Pedro A.', 'Sofía L.', 'Javier M.'],
-        actions: ['acaba de acceder al producto', 'compró hace 2 minutos', 'está viendo esta oferta', 'acaba de obtener acceso', 'verificó la oferta']
+        loader: ['Conectando...', 'Cargando datos...', 'Verificando oferta...', 'Activando...'],
+        names: ['Carlos R.', 'Ana M.', 'Luis G.', 'María T.', 'Pedro A.'],
+        actions: ['acaba de acceder al producto', 'compró hace 2 minutos', 'está viendo esta oferta']
       },
       en: {
-        badge: 'SYSTEM VERIFIED · VGP v139',
         btn: 'Get access now',
         btnFallback: '🔍 Check Current Price',
         priceLabel: 'Your commission per sale',
@@ -869,12 +705,11 @@
         trust: '100% secure payment · Instant access · Guarantee included',
         live: 'LIVE · Active offer',
         countdownLabel: 'Special offer active for',
-        loader: ['Connecting to VGP PRO...', 'Loading product data...', 'Verifying offer...', 'Activating live price...'],
-        names: ['James K.', 'Sarah M.', 'Mike D.', 'Emma P.', 'David W.', 'Lisa R.'],
-        actions: ['just accessed the product', 'purchased 2 minutes ago', 'is viewing this offer', 'just gained access', 'verified the offer']
+        loader: ['Connecting...', 'Loading data...', 'Verifying offer...', 'Activating...'],
+        names: ['James K.', 'Sarah M.', 'Mike D.', 'Emma P.'],
+        actions: ['just accessed the product', 'purchased 2 minutes ago', 'is viewing this offer']
       },
       pt: {
-        badge: 'SISTEMA VERIFICADO · VGP v139',
         btn: 'Quero acesso agora',
         btnFallback: '🔍 Consultar Preço Atual',
         priceLabel: 'Sua comissão por venda',
@@ -882,48 +717,9 @@
         trust: 'Pagamento 100% seguro · Acesso imediato · Garantia incluída',
         live: 'AO VIVO · Oferta ativa',
         countdownLabel: 'Oferta especial ativa por',
-        loader: ['Conectando ao VGP PRO...', 'Carregando dados...', 'Verificando oferta...', 'Ativando preço ao vivo...'],
-        names: ['João P.', 'Maria S.', 'Lucas A.', 'Ana C.', 'Pedro R.'],
-        actions: ['acabou de acessar o produto', 'comprou há 2 minutos', 'está vendo esta oferta', 'acabou de obter acesso', 'verificou a oferta']
-      },
-      de: {
-        badge: 'SYSTEM VERIFIZIERT · VGP v139',
-        btn: 'Jetzt Zugang erhalten',
-        btnFallback: '🔍 Aktuellen Preis prüfen',
-        priceLabel: 'Deine Provision pro Verkauf',
-        priceNote: 'Du erhältst dies pro Konversion',
-        trust: '100% sichere Zahlung · Sofortiger Zugang · Garantie inklusive',
-        live: 'LIVE · Aktives Angebot',
-        countdownLabel: 'Sonderangebot aktiv für',
-        loader: ['Verbinde mit VGP PRO...', 'Lade Produktdaten...', 'Prüfe Angebot...', 'Aktiviere Live-Preis...'],
-        names: ['Klaus M.', 'Anna B.', 'Stefan K.', 'Julia W.', 'Thomas H.'],
-        actions: ['hat soeben Zugang erhalten', 'hat vor 2 Min. gekauft', 'sieht dieses Angebot', 'hat Zugang erhalten', 'prüfte das Angebot']
-      },
-      fr: {
-        badge: 'SYSTÈME VÉRIFIÉ · VGP v139',
-        btn: "Obtenir l'accès maintenant",
-        btnFallback: '🔍 Consulter le Prix Actuel',
-        priceLabel: 'Votre commission par vente',
-        priceNote: 'Vous recevez ceci par conversion',
-        trust: 'Paiement 100% sécurisé · Accès immédiat · Garantie incluse',
-        live: 'EN DIRECT · Offre active',
-        countdownLabel: 'Offre spéciale active pour',
-        loader: ['Connexion à VGP PRO...', 'Chargement des données...', 'Vérification de l\'offre...', 'Activation du prix en direct...'],
-        names: ['Pierre D.', 'Marie L.', 'Jean M.', 'Sophie R.', 'Lucas B.'],
-        actions: ["vient d'accéder au produit", 'a acheté il y a 2 min', 'consulte cette offre', "vient d'obtenir l'accès", 'a vérifié l\'offre']
-      },
-      it: {
-        badge: 'SISTEMA VERIFICATO · VGP v139',
-        btn: 'Voglio accedere ora',
-        btnFallback: '🔍 Controlla il Prezzo Attuale',
-        priceLabel: 'La tua commissione per vendita',
-        priceNote: 'Ricevi questo per conversione',
-        trust: 'Pagamento 100% sicuro · Accesso immediato · Garanzia inclusa',
-        live: 'IN DIRETTA · Offerta attiva',
-        countdownLabel: 'Offerta speciale attiva per',
-        loader: ['Connessione a VGP PRO...', 'Caricamento dati...', 'Verifica offerta...', 'Attivazione prezzo live...'],
-        names: ['Marco R.', 'Giulia B.', 'Luca F.', 'Anna V.', 'Paolo M.'],
-        actions: ["ha appena ottenuto l'accesso", 'ha acquistato 2 min fa', 'sta visualizzando questa offerta', "ha appena accesso al prodotto", 'ha verificato l\'offerta']
+        loader: ['Conectando...', 'Carregando dados...', 'Verificando oferta...', 'Ativando...'],
+        names: ['João P.', 'Maria S.', 'Lucas A.', 'Ana C.'],
+        actions: ['acabou de acessar o produto', 'comprou há 2 minutos', 'está vendo esta oferta']
       }
     };
 
@@ -935,27 +731,21 @@
     // ========== ELEMENTOS DOM ==========
     const loader = document.getElementById('loader');
     const errorDiv = document.getElementById('error-container');
-    const mainDiv = document.getElementById('main');
     const priceArea = document.getElementById('priceArea');
     const btnArea = document.getElementById('btnArea');
     const emergencyBtn = document.getElementById('emergency-btn');
     const dynamicTitle = document.getElementById('dynamic-title');
-    const dynamicDescription = document.getElementById('dynamic-description');
 
     // ========== VARIABLES DE ESTADO ==========
     let currentLang = (urlLang && TEXTS[urlLang]) ? urlLang : 'es';
     let T = TEXTS[currentLang];
     let currentAffiliateUrl = '';
-    let currentSelladoSymbol = '$';
-    let currentSelladoPrice = '';
     let loaderInterval = null;
     let emergencyTimeout = null;
     let isDataLoaded = false;
-    let loadStartTime = Date.now();
 
     // ========== APLICAR TEXTOS ESTÁTICOS ==========
     function applyStaticTexts() {
-      document.getElementById('badgeText').textContent = T.badge;
       document.getElementById('btnText').textContent = T.btn;
       document.getElementById('btnFallback').textContent = T.btnFallback;
       document.getElementById('priceLabel').textContent = T.priceLabel;
@@ -984,8 +774,8 @@
       throw new Error('UID inválido: ' + UID);
     }
 
-    document.getElementById('footerUid').textContent = UID + ' · v139';
-    document.getElementById('title').innerHTML = 'Cargando producto <em>' + UID + '</em>...';
+    document.getElementById('footerUid').textContent = UID;
+    document.getElementById('title').innerHTML = 'Cargando...';
 
     // ========== COUNTDOWN TIMER ==========
     const COUNTDOWN_SEC = 407;
@@ -1015,30 +805,14 @@
       }
     }, EMERGENCY_TIMEOUT_MS);
 
-    // ========== ACTUALIZAR META-TAGS DINÁMICOS ==========
-    function updateMetaTags(title, description) {
-      if (title) {
-        dynamicTitle.textContent = title + ' | VGP';
-        document.title = title + ' | VGP';
-      }
-      if (description) {
-        dynamicDescription.textContent = description.substring(0, 160);
-      }
-    }
-
-    // ========== ACTIVAR MODO FALLBACK (PRO-4) ==========
+    // ========== ACTIVAR MODO FALLBACK ==========
     function activateFallbackMode(reason) {
       console.warn('[FALLBACK]', reason);
       priceArea.classList.add('price-fallback');
       btnArea.classList.add('fallback-mode');
-
-      const fallbackBtn = document.getElementById('btnFallback');
-      if (fallbackBtn && SCRIPT_URL) {
-        fallbackBtn.href = SCRIPT_URL + '?id=' + encodeURIComponent(UID) + '&t=' + Date.now();
-      }
     }
 
-    // ========== MOSTRAR TOAST SOCIAL MULTI-IDIOMA ==========
+    // ========== MOSTRAR TOAST ==========
     function showToast() {
       const name = T.names[Math.floor(Math.random() * T.names.length)];
       const action = T.actions[Math.floor(Math.random() * T.actions.length)];
@@ -1053,48 +827,40 @@
       setTimeout(() => toast.classList.remove('visible'), 5000);
     }
 
-    // ========== INYECTAR DATOS (PRO-2: PRECIO SELLADO PRIMERO) ==========
+    // ========== INYECTAR DATOS DEL PRODUCTO ==========
     function renderProduct(data) {
+      // Título del producto
+      const productTitle = data.titulo_viral || data.nombre || 'Oferta Especial';
+      document.getElementById('title').innerHTML = productTitle;
+      dynamicTitle.textContent = productTitle + ' | VGP';
+
       // Imagen
       const img = document.getElementById('productImage');
-      const imgUrl = data.urlFotoCloud || data.urlFoto || data.imagen || '';
+      const imgUrl = data.urlFotoCloud || data.urlFoto || '';
       if (imgUrl) {
         img.onload = () => img.classList.add('loaded');
         img.src = imgUrl;
       }
 
-      // Título y Meta Tags dinámicos
-      const productTitle = data.titulo_viral || data.nombre || 'Oferta Verificada';
-      document.getElementById('title').innerHTML = productTitle;
-      updateMetaTags(productTitle, data.pilar1 || data.beneficio1 || 'Oferta verificada por IA');
-
-      // Beneficios
-      if (data.pilar1) document.getElementById('benefit1').innerHTML = data.pilar1;
-      if (data.pilar2) document.getElementById('benefit2').innerHTML = data.pilar2;
-      if (data.pilar3) document.getElementById('benefit3').innerHTML = data.pilar3;
-
-      // PRO-2: Precio sellado primero (nunca debe quedar vacío)
-      // 1. Guardar precio sellado
-      currentSelladoSymbol = data.simboloSellado || data.simbolo || data.symbol || '$';
-      currentSelladoPrice = data.precioSellado || data.precio || data.price || '';
-
-      // 2. Mostrar precio sellado inmediatamente (evita parpadeo)
-      document.getElementById('currency').textContent = currentSelladoSymbol;
-      document.getElementById('price').textContent = currentSelladoPrice || 'Cargando...';
-
-      // 3. Si hay precio sellado válido, quitar estado de carga
-      if (currentSelladoPrice && currentSelladoPrice.length > 0) {
-        priceArea.classList.remove('price-loading');
+      // Descripción (usando pilar1 o beneficios)
+      const description = data.pilar1 || data.descripcion || data.beneficio1 || '';
+      const descElement = document.getElementById('description');
+      if (description) {
+        descElement.innerHTML = description;
+      } else {
+        descElement.style.display = 'none';
       }
 
-      // 4. Si viene precio vivo del scraping, actualizar después
-      if (data.fuentePrecio === 'scraping_vivo' && data.precioCorriente) {
-        const liveSymbol = data.symbolCorriente || currentSelladoSymbol;
-        const livePrice = data.precioCorriente || '';
-        if (livePrice) {
-          document.getElementById('currency').textContent = liveSymbol;
-          document.getElementById('price').textContent = livePrice;
-        }
+      // Precio
+      const symbol = (data.simbolo || data.symbol || '$').trim();
+      const priceValue = (data.precio || data.price || '').trim();
+
+      if (priceValue) {
+        document.getElementById('currency').textContent = symbol;
+        document.getElementById('price').textContent = priceValue;
+        priceArea.classList.remove('price-loading');
+      } else {
+        activateFallbackMode('precio no disponible');
       }
 
       // URL de afiliado para el botón
@@ -1111,9 +877,6 @@
         currentLang = data.idioma_nativo;
         T = TEXTS[currentLang];
         applyStaticTexts();
-        if (!data.pilar1) document.getElementById('benefit1').textContent = T.b1;
-        if (!data.pilar2) document.getElementById('benefit2').textContent = T.b2;
-        if (!data.pilar3) document.getElementById('benefit3').textContent = T.b3;
       }
 
       isDataLoaded = true;
@@ -1121,7 +884,7 @@
       emergencyBtn.classList.remove('visible');
     }
 
-    // ========== CARGAR DATOS CON PRECIO SELLADO PRIORITARIO ==========
+    // ========== CARGAR DATOS ==========
     async function loadProduct(uid) {
       try {
         const url = SCRIPT_URL + '?id=' + encodeURIComponent(uid) + '&t=' + Date.now();
@@ -1134,7 +897,7 @@
 
         renderProduct(data);
       } catch (err) {
-        console.error('Error cargando producto:', err);
+        console.error('Error:', err);
         activateFallbackMode(err.message);
       } finally {
         if (loaderInterval) clearInterval(loaderInterval);
@@ -1142,47 +905,35 @@
       }
     }
 
-    // ========== STICKY BUTTON SCROLL ==========
+    // ========== STICKY BUTTON ==========
     window.addEventListener('scroll', () => {
       const sticky = document.getElementById('stickyBar');
       if (sticky) sticky.classList.toggle('visible', window.scrollY > 280);
-    }, {
-      passive: true
-    });
+    }, { passive: true });
 
-    // ========== STICKY BUTTON CLICK ==========
     document.getElementById('stickyBtn').onclick = () => {
       if (currentAffiliateUrl) {
         window.open(currentAffiliateUrl, '_blank', 'noopener');
-      } else if (SCRIPT_URL) {
-        window.open(SCRIPT_URL + '?id=' + encodeURIComponent(UID), '_blank', 'noopener');
       }
     };
 
-    // ========== TOAST INTERVAL ==========
-    let toastInterval = null;
-
-    // ========== INICIAR CARGA ==========
+    // ========== INICIAR ==========
     loadProduct(UID);
 
     setTimeout(() => {
       showToast();
-      toastInterval = setInterval(showToast, 18000);
+      setInterval(showToast, 18000);
     }, 9000);
 
-    // ========== DIAGNÓSTICO EN CONSOLA ==========
+    // ========== DIAGNÓSTICO ==========
     window.VGP = {
       uid: () => console.log('UID:', UID),
       reload: () => loadProduct(UID),
-      precioSellado: () => console.log('Precio sellado:', currentSelladoSymbol + currentSelladoPrice),
-      toast: () => showToast(),
       emergency: () => {
         if (currentAffiliateUrl) window.open(currentAffiliateUrl, '_blank');
-        else console.warn('No hay URL de afiliado disponible');
       }
     };
   </script>
 
 </body>
-
 </html>
